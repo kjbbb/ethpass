@@ -1,0 +1,21 @@
+{
+  "name": "ethpass",
+  "version": "1.0.0",
+  "description": "",
+  "main": "deploy.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+  },
+  "dependencies": {
+    "bignumber.js": "^4.0.2",
+    "eth-sig-util": "^1.2.2",
+    "ethereumjs-util": "^5.1.2",
+    "ethjs": "^0.2.7",
+    "web3": "^0.20.1",
+    "solc": "^0.4.18"
+  }
+}
