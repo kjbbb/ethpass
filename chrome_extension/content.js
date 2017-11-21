@@ -9,6 +9,17 @@ chrome.runtime.onMessage.addListener(
 			
 			chrome.runtime.sendMessage({"message": "open_new_tab", "url": firstHref});
 
+		if (request.action == "getDOM")
+
+			var web3 = document.web3
+
+			console.log(web3);
+
+		else
+
+			sendResponse({}); // Send nothing..
+
 	}
+
 }
 );

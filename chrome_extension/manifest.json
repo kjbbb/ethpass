@@ -7,6 +7,13 @@
 		"default_popup": "index.html"
 	},
 
+	"permissions": [
+		"https://*/*",
+		"http://*/*",
+		"tabs",
+		"activeTab"
+	],
+
 	"background": {
 		"scripts": ["background.js"]
 	},
@@ -17,7 +24,7 @@
 				"<all_urls>"
 			],
 
-			"js": ["jquery-3.2.1.min.js", "content.js"]
+			"js": ["jquery-3.2.1.min.js", "content.js", "ethpass.js"]
 		}
 	]
 
