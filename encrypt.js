@@ -46,12 +46,24 @@ var readPayload = function(aes256KeyBytes, encryptedPayloadBytes) {
         return obj;
 };
 
+var readPayloadHex = function(aes256KeyBytes, encryptedPayloadHex) {
+    let bytes = aesjs.utils.hex.toBytes(encryptedPayloadHex);
+    return readPayload(aes256KeyBytes, bytes);
+}
+
+var generatePayloadHex = function(aes256KeyBytes, encryptedPayloadBytes) {
+    let bytes = generatePayload(aes256KeyBytes, encryptedPayloadBytes);
+    return aesjs.utils.hex.fromBytes(bytes);
+}
+
 var getPayloadVersion = function(encryptedBytes) {
     return encryptedBytes[0];
 }
 
 module.exports = {
     generatePayload: generatePayload,
+    generatePayloadHex: generatePayloadHex,
     readPayload: readPayload,
+    readPayloadHex: readPayloadHex,
     version: version
 };
