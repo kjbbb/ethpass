@@ -1,45 +1,73 @@
 <html>
 <head>
-    <link rel="stylesheet" href="index.css">
-  <!-- Latest compiled and minified CSS -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="index.css">
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+    
+
 </head>
 <body>
-    <div class="container main">
-        <div class="row align-items-center">
-            <div class="col-lg-8" align="center">
-                <h1> Etherium Password Manager </h1>
-                <div class="intro" style="">
-                    <p> Etherium password manager is a brand new way to store passwords. No more storing passwords in insecure cloud locations with main stream apps. Store your passwords on the Etherium blockchain with all the saftey and security that has revolutionized the world as we know it.</p>
-                </div>
+    <div class="wrapper">
+        <nav id="sidebar">
+            <!-- Sidebar Header -->
+            <div class="sidebar-header">
+                <h3>CrpytoPass</h3>
             </div>
-        </div>
-        <div class="row align-items-center">
-            <div class="col-lg-8" align="center">
-                <h2> Send a credentials to the blockchain! </h2>
-                <input id="username" type="text" name="username" placeholder="username"/>
-                <input id="password" type="text" name="password" placeholder="password"/>
-                <button onclick="addPassword()">add password</button>
-            </div>
-        </div>
-        <div class="row align-items-center">
-            <div class="col-lg-8" align="center">
-                <h2> Show my credentials </h2>
-                <ul id="passwords">
-                </ul>
-                <br />
-                <button onclick="loadPasswords()">load passwords</button>
-            </div>
+
+            <!-- Sidebar Links -->
+            <ul class="list-unstyled components">
+                <li class="active"><a href="#">Home</a></li>
+                <li><a href="https://ethereum.org/">What is Ethereum?</a></li>
+
+                <li><!-- Link with dropdown items -->
+                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">Donate</a>
+                    <ul class="collapse list-unstyled" id="homeSubmenu">
+                        <li><a href="#">Donate Crypto!</a></li>
+                        <li><a href="#">Donate Money!</a></li>
+                        <li><a href="https://www.ethereum.org/donate">Donate to The Ethereum Project!</a></li>
+                    </ul>
+                <li><a href="#">Contact</a></li>
+            </ul>
+            
+        </nav>
+        <div id="content">
+
+            <h2> Ethereum Password Manager </h2>
+            <p> Ethereum password manager is a brand new way to store passwords. No more storing passwords in insecure cloud locations with main stream apps. Store your passwords on the Ethereum blockchain with all the saftey and security that has revolutionized the world as we know it.</p>
+
+            <div class="my-line"></div>
+
+            <h2> Send a credentials to the blockchain! </h2>
+            <input id="username" type="text" name="username" placeholder="username"/>
+            <input id="password" type="text" name="password" placeholder="password"/>
+            <button onclick="addPassword()">add password</button>
+
+            <div class="my-line"></div>
+             
+            <h2> Show my credentials </h2>
+            <ul id="passwords">
+            </ul>
+            <br />
+            <button onclick="loadPasswords()">load passwords</button>
+
         </div>
     </div>
     
 </body>
 
-<!-- jQuery library -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
-<!-- Latest compiled JavaScript -->
+<!-- jQuery CDN -->
+<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+<!-- Bootstrap Js CDN -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!-- Custom Scroller Js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+
 <script src="index.js"></script>
 
 </html>
