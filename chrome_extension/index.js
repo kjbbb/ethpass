@@ -1,8 +1,6 @@
 
-
 document.getElementById('add_password').onclick = addPassword;
 document.getElementById('load_password').onclick = loadPasswords;
-
 
 // Send a message to the content page to load the web3 object and query the blockchain for the contract information.
 window.onload = () => {
@@ -10,16 +8,27 @@ window.onload = () => {
 	chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
 		chrome.tabs.sendMessage(
 			tabs[0].id,
-			{from: 'popup', subject: 'setContractInst'}, contractObj);
-	});
+			{from: 'popup', subject: 'setContractInst'}, function(response) {
+                    if (chrome.runtime.lastError) {
+                        console.log('ERROR: ', chrome.runtime.lastError);
+                    } else {
+                        console.log(response.response)
+                    }
+                }
+        );
 
-
+    });
 	// chrome.extension.getBackgroundPage().initializContract();
 
 }
 
-function addPassword(contractObj) {
-    let c = contractObj.contract;
+chrome.storage.sync.get(['localcontract'], function(items){
+    var contract = items[0]
+})
+
+function addPassword() {
+    console.log(contract)
+    let c = contract;
 
     let username = document.getElementById("username").value;
     let password = document.getElementById("password").value;
@@ -49,8 +58,8 @@ function addPassword(contractObj) {
     });
 }
 
-function loadPasswords(contractObj) {
-    let c = contractObj.contract;
+function loadPasswords() {
+    let c = window.ContractInst;
 
     c.get((err, result) => {
         console.log(err, result);

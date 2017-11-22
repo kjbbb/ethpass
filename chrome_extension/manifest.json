@@ -11,7 +11,8 @@
 		"https://*/*",
 		"http://*/*",
 		"tabs",
-		"activeTab"
+		"activeTab",
+		"storage"
 	],
 
 	"background": {
@@ -28,7 +29,7 @@
 		}
 	],
 	"web_accessible_resources" : [
-		"get_variables.js"
+		"ethpass.js",
 	]
 
 }
