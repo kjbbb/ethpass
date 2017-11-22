@@ -1,0 +1,45 @@
+<html>
+<head>
+    <link rel="stylesheet" href="index.css">
+  <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container main">
+        <div class="row align-items-center">
+            <div class="col-lg-8" align="center">
+                <h1> Etherium Password Manager </h1>
+                <div class="intro" style="">
+                    <p> Etherium password manager is a brand new way to store passwords. No more storing passwords in insecure cloud locations with main stream apps. Store your passwords on the Etherium blockchain with all the saftey and security that has revolutionized the world as we know it.</p>
+                </div>
+            </div>
+        </div>
+        <div class="row align-items-center">
+            <div class="col-lg-8" align="center">
+                <h2> Send a credentials to the blockchain! </h2>
+                <input id="username" type="text" name="username" placeholder="username"/>
+                <input id="password" type="text" name="password" placeholder="password"/>
+                <button onclick="addPassword()">add password</button>
+            </div>
+        </div>
+        <div class="row align-items-center">
+            <div class="col-lg-8" align="center">
+                <h2> Show my credentials </h2>
+                <ul id="passwords">
+                </ul>
+                <br />
+                <button onclick="loadPasswords()">load passwords</button>
+            </div>
+        </div>
+    </div>
+    
+</body>
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="index.js"></script>
+
+</html>
