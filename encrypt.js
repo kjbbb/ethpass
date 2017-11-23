@@ -8,6 +8,16 @@ the encrypted json string.
 
 the version byte allows us to alter the encryption scheme in the future, or do
 something like add compression.
+
+VERSION (1 byte)
+COUNTER (2 bytes)
+PAYLOAD (n bytes)
+SHA1    (32 bytes)
+
+--password fee could be optional, but encouraged
+
+--do we need a queue in the contract? (write ahead log)
+
 */
 
 const version = 0x01;

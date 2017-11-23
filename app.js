@@ -2,6 +2,9 @@ var aes = require('aes-js');
 var encrypt = require('./encrypt.js');
 var contract = require('./contract.js');
 
+//todo checksum
+//todo semaphore counter
+
 window.onload = () => {
     let Contract = web3.eth.contract(contract.abi);
     ContractInst = Contract.at(contract.address);
