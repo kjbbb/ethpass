@@ -12,6 +12,7 @@ contract PasswordManager
     function set(bytes _blob) public {
         //we should add a checksum so that we know the data coming in isn't corrupt
         data[msg.sender] = _blob;
+        return data[msg.sender];
     }
 
     function get() constant public returns (bytes) {
