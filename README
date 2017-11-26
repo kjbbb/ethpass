@@ -27,7 +27,7 @@ on hundreds of thousands of machines, and virtually guaranteed to not be lost.
 
     With CryptoPass, your data is readable and writable only by you, so no one
 but you can see the passwords, including us. Before being forever cemented onto
-the blockchain, the passwords are encrypted using your Ethereum keys. We
+the blockchain, the passwords are encrypted using your Ethereum private key. We
 leverage Ethereum’s built-in, state of the art encryption to encrypt your data
 before it is written to the blockchain, and only you can decrypt it. Just make
 sure not to lose your Ethereum private key! We recommend following the standard
@@ -61,3 +61,6 @@ A: It costs a small network fee to store your passwords on the blockchain,
 Q: Is it open source?
 A: Yes, you can see how it works. <github link>
 
+Q: Can I store my passwords offline, and not sync them to the network?
+A: Yes. This way, you also won't have to pay a miner fee, but you lose the
+   benefits of decentralization.
