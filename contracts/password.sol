@@ -11,6 +11,10 @@ contract PasswordManager
 
     function set(string _blob) public {
         //we should add a checksum so that we know the data coming in isn't corrupt
+        if (data[msg.sender]) {
+            delete data[msg.sender];
+        }
+
         data[msg.sender] = _blob;
     }
 
