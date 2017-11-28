@@ -1,16 +1,17 @@
+# Setup
 deploy contract on blockchain:
-    launch testrpc
-    `node deploy.js`
+  launch testrpc
+  `node deploy.js`
 
-    copy first line of output from `node deploy.js` into contract.js (into the contractInfoJson var)
+  copy first line of output from `node deploy.js` into contract.js (into the contractInfoJson var)
 
 build js:
     browserify app.js -o bundle.js
 
 
-CryptoPass
+# CryptoPass
 
-    CryptoPass is a decentralized application (DAPP) to store your passwords
+  CryptoPass is a decentralized application (DAPP) to store your passwords
 securely on the blockchain, powered by Ethereum. CryptoPass leverages
 blockchain infrastructure to store your passwords redundantly across the the
 ethereum network, so that they are never lost, and are only accessible by you.
@@ -19,13 +20,13 @@ control of your own data, and the data is backed up and indelibly stored on one
 of the world’s largest networks of supercomputers, accessible anywhere that has
 internet.
 
-    Unlike current password managers, with CryptoPass, your passwords are not
+  Unlike current password managers, with CryptoPass, your passwords are not
 stored on an enterprise cloud network that is owned by a company or business,
 where you run the risk of them losing or accessing your data. Your passwords
 are stored on Ethereum, which is owned by everyone, and your data is backed up
 on hundreds of thousands of machines, and virtually guaranteed to not be lost.
 
-    With CryptoPass, your data is readable and writable only by you, so no one
+  With CryptoPass, your data is readable and writable only by you, so no one
 but you can see the passwords, including us. Before being forever cemented onto
 the blockchain, the passwords are encrypted using your Ethereum private key. We
 leverage Ethereum’s built-in, state of the art encryption to encrypt your data
@@ -34,7 +35,7 @@ sure not to lose your Ethereum private key! We recommend following the standard
 security protocols, such as printing out a paper wallet, and/or writing down
 your account’s seed words.
 
-FAQ
+# FAQ
 
 Q: Can you, or anyone else see my passwords?
 A: No, only you can see them. They are encrypted and decrypted client side, the
