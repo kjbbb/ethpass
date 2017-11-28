@@ -1,5 +1,5 @@
 # Setup
-deploy contract on blockchain:
+deploy contract on blockchain:  
   `launch testrpc`  
   `node deploy.js`  
 
