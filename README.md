@@ -1,12 +1,12 @@
 # Setup
 deploy contract on blockchain:
-   `launch testrpc
-    node deploy.js`
+  `launch testrpc`  
+  `node deploy.js`  
 
   copy first line of output from `node deploy.js` into contract.js (into the contractInfoJson var)
 
-build js:
-    `browserify app.js -o bundle.js`
+build js:  
+  `browserify app.js -o bundle.js`
 
 
 # CryptoPass
