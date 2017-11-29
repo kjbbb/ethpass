@@ -58,48 +58,9 @@
     <div class="container">
       <div class="row">
         <div class="col-xs-4 bg-light fill-vertical shadow">
-          <br />
-          <div><input type="text" class="form-control" placeholder="search"/></div>
-          <br />
-          <table class="table">
-            <tbody>
-
-              <tr><th scope="row"></th>
-                <td>
-                  <p class="nomargin"><strong>gmail</strong></p>
-                  <p class="text-muted nomargin">lol@gmail.com</p>
-                </td>
-              </tr>
-              <tr class="bg-dark">
-                <th scope="row"></th>
-                <td>
-                  <p class="nomargin"><strong>fastmail</strong></p>
-                  <p class="text-muted nomargin">lol@fastmail.com</p>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row"></th>
-                <td>
-                  <p class="nomargin"><strong>placeholder</strong></p>
-                  <p class="text-muted nomargin">lol@placeholder.com</p>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row"></th>
-                <td>
-                  <p class="nomargin"><strong>new</strong></p>
-                  <p class="text-muted nomargin">memes@memes.com</p>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row"></th>
-                <td>
-                  <p class="nomargin"><strong>new</strong></p>
-                  <p class="text-muted nomargin">memes@memes.com</p>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <!-- react sidebar -->
+          <div id="sidebar"></div>
+          <!-- end react sidebar -->
         </div>
         <div class="col-xs-8">
           <br />
@@ -107,83 +68,25 @@
             <div class="row">
               <div class="col-xs-1"></div>
               <div class="col-xs-11">
-                <div class="">
-                  <button class="btn btn-default">+ add password</button>
-                  <button class="btn btn-default">+ sync to blockchain</button>
-                  <button class="btn btn-default">+ download your data</button>
-                </div>
+
+                <!-- react actionbuttons -->
+                <div id="actionbuttons"></div>
+                <!-- end react actionbuttons -->
+
               </div>
              </div>
           </div>
 
           <br />
 
-          <h2 class="text-center">fastmail</h2>
+          <!-- react centerpane -->
+          <div id="centerpane"></div>
+          <!-- end react centerpane -->
 
-          <div class="container">
-            <div class="row">
-              <div class="col-xs-1"></div>
-              <div class="col-xs-2 text-right">
-                <p><strong>username or email</strong></p>
-                <p><strong>password</strong></p>
-                <p><strong>created on</strong></p>
-                <p><strong>modified on</strong></p>
-                <p><strong>notes</strong></p>
-              </div>
-              <div class="col-xs-9">
-                <p>memes@memes.com</p>
-                <p>nyancat</p>
-                <p>nov 1 2017</p>
-                <p>nov 1 2017</p>
-                <p>
-                some notes here
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <br />
-
-          <div class="text-center">
-            <button class="btn btn-default">update</button>
-            <button class="btn btn-danger">delete</button>
-          </div>
         </div>
       </div>
     </div>
-
-      <!--
-        <div class="row">
-        <div class="col-xs-3"></div>
-        <div class="col-xs-3">
-        <div class="form-group">
-        <label for="username">username</label>
-        <input id="username" class="form-control" type="text" name="username" placeholder="username"/>
-        </div>
-        <div class="form-group">
-        <label for="password">password</label>
-        <input id="password" class="form-control" type="text" name="password" placeholder="password"/>
-        </div>
-        <div class="form-group">
-        <button onclick="addPassword()">add password</button>
-        </div>
-        <div class="form-group">
-        <button onclick="loadPasswords()">load passwords</button>
-        </div>
-        </div>
-        <div class="col-xs-3"></div>
-        </div>
-
-        <div class="row">
-        <div class="col-xs-3"></div>
-        <div class="col-xs-3">
-        <ul id="passwords"></ul>
-        </div>
-        <div class="col-xs-3"></div>
-        </div>
-      -->
     </div><!-- /.container -->
-    <div id="reactroot"></div>
   </body>
 </html>
 
