@@ -43,34 +43,34 @@ const AddPasswordModal = observer(({store}) => {
         <Modal.Body>
 			<Form horizontal>
 			    <FormGroup controlId="formHorizontalName">
-			    <Col componentClass={ControlLabel} sm={2}>
+			    <Col componentClass={ControlLabel} sm={3}>
 			    Name
 			    </Col>
-			    <Col sm={10}>
+			    <Col sm={9}>
 			        <FormControl type="name" placeholder="Name" />
 			    </Col>
 			    </FormGroup>
                 <FormGroup controlId="formHorizontalUsername">
-                    <Col componentClass={ControlLabel} sm={2}>
+                    <Col componentClass={ControlLabel} sm={3}>
                     Username or Email
                     </Col>
-                    <Col sm={10}>
+                    <Col sm={9}>
                         <FormControl type="username" placeholder="Username or Email" />
 			        </Col>
 			    </FormGroup>
 			    <FormGroup controlId="formHorizontalPassword">
-			        <Col componentClass={ControlLabel} sm={2}>
+			        <Col componentClass={ControlLabel} sm={3}>
 			        Password
 			        </Col>
-			        <Col sm={10}>
+			        <Col sm={9}>
 			            <FormControl type="password" placeholder="Password" />
 			        </Col>
 			    </FormGroup>
 			    <FormGroup controlId="formControlsHorizontalTextarea">
-			        <Col componentClass={ControlLabel} sm={2}>
+			        <Col componentClass={ControlLabel} sm={3}>
 			            <ControlLabel>Notes</ControlLabel>
 			        </Col>
-			        <Col sm={10}>
+			        <Col sm={9}>
 			            <FormControl componentClass="textarea" placeholder="Notes" />
 			        </Col>
 			    </FormGroup>
