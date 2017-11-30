@@ -5,23 +5,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {observer} from 'mobx-react';
 import {observable, action} from 'mobx';
-import {Button} from 'react-bootstrap';
+import {Button, Modal, Form, FormControl, FormGroup, Col, Checkbox, ControlLabel} from 'react-bootstrap';
 import classnames from 'classnames';
 
 //var RBS = require('react-bootstrap');
 //var Button = RBS.Button;
 
-const ActionButtons = (
-  <div className="">
-    <button className="btn btn-default">+ add password</button>
-    <button className="btn btn-default">+ sync to blockchain</button>
-    <button className="btn btn-default">+ download your data</button>
-  </div>
-);
-
 class Store {
     @observable passwordA = [];
     @observable selected = 2;
+
+    @observable showAddModal = false;
 
     @action deleteSelected = () => {
         if (this.passwordA.length) {
@@ -33,6 +27,79 @@ class Store {
         }
     }
 }
+
+const AddPasswordModal = observer(({store}) => {
+
+    let fnClosePwModal = () => {
+        store.showAddModal = false;
+    }
+
+    return (
+    <Modal show={store.showAddModal}
+           onHide={fnClosePwModal}>
+        <Modal.Header closeButton>
+           <Modal.Title>Add Password</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+			<Form horizontal>
+			    <FormGroup controlId="formHorizontalName">
+			    <Col componentClass={ControlLabel} sm={2}>
+			    Name
+			    </Col>
+			    <Col sm={10}>
+			        <FormControl type="name" placeholder="Name" />
+			    </Col>
+			    </FormGroup>
+                <FormGroup controlId="formHorizontalUsername">
+                    <Col componentClass={ControlLabel} sm={2}>
+                    Username or Email
+                    </Col>
+                    <Col sm={10}>
+                        <FormControl type="username" placeholder="Username or Email" />
+			        </Col>
+			    </FormGroup>
+			    <FormGroup controlId="formHorizontalPassword">
+			        <Col componentClass={ControlLabel} sm={2}>
+			        Password
+			        </Col>
+			        <Col sm={10}>
+			            <FormControl type="password" placeholder="Password" />
+			        </Col>
+			    </FormGroup>
+			    <FormGroup controlId="formControlsHorizontalTextarea">
+			        <Col componentClass={ControlLabel} sm={2}>
+			            <ControlLabel>Notes</ControlLabel>
+			        </Col>
+			        <Col sm={10}>
+			            <FormControl componentClass="textarea" placeholder="Notes" />
+			        </Col>
+			    </FormGroup>
+			</Form>
+        </Modal.Body>
+        <Modal.Footer>
+            <Button>Add Password</Button>
+			{' '}
+            <Button onClick={fnClosePwModal}>Close</Button>
+        </Modal.Footer>
+    </Modal>);
+});
+
+const ActionButtons = observer(({store}) => {
+
+    let fnOpenPwModal = () => {
+        store.showAddModal = true;
+    }
+
+    return (
+    <div>
+        <button className="btn btn-default"
+                onClick={fnOpenPwModal}>+ add password</button>{' '}
+        <button className="btn btn-default">+ sync to blockchain</button>{' '}
+        <button className="btn btn-default">+ download your data</button>{' '}
+        <AddPasswordModal store={store} />
+    </div>
+    );
+});
 
 const SidebarView = observer(({store}) => {
 
@@ -101,8 +168,8 @@ const CenterpaneView = observer(({store}) => {
         </div>
         <br />
       <div className="text-center">
-        <button className="btn btn-default">update </button>
-        <button className="btn btn-danger" onClick={store.deleteSelected}> delete</button>
+        <button className="btn btn-default">update</button>{' '}
+        <button className="btn btn-danger" onClick={store.deleteSelected}>delete</button>
       </div>
     </div>
     )
@@ -145,5 +212,5 @@ window.onload = () => {
 
     ReactDOM.render(<SidebarView store={store} />, document.getElementById("sidebar"));
     ReactDOM.render(<CenterpaneView store={store} />, document.getElementById("centerpane"));
-    ReactDOM.render(ActionButtons, document.getElementById("actionbuttons"));
+    ReactDOM.render(<ActionButtons store={store} />, document.getElementById("actionbuttons"));
 }
