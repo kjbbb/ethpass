@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom';
 import {observer} from 'mobx-react';
 import {observable, action} from 'mobx';
 import {Button} from 'react-bootstrap';
-import classNames from 'classnames';
+import classnames from 'classnames';
 
 //var RBS = require('react-bootstrap');
 //var Button = RBS.Button;
@@ -21,19 +21,33 @@ const ActionButtons = (
 
 class Store {
     @observable passwordA = [];
-    @observable selected = 0;
+    @observable selected = 2;
+
+    @action deleteSelected = () => {
+        if (this.passwordA.length) {
+            if (this.selected == this.passwordA.length - 1) {
+                this.selected = this.selected - 1;
+                console.log('hit');
+            }
+            this.passwordA.splice(this.selected, 1);
+        }
+    }
 }
 
 const SidebarView = observer(({store}) => {
 
     let fnSelect = (idx) => {
         store.selected = idx;
-        console.log(idx);
     }
 
     let pwA = store.passwordA.map((pw, idx) => {
+        let cnames = (idx == store.selected) ? classnames('bg-dark') : null;
         return (
-            <tr key={idx} onClick={fnSelect.bind(this, idx)}><th scope="row"></th>
+            <tr
+                key={idx}
+                onClick={fnSelect.bind(this, idx)}
+                className={cnames}>
+              <th scope="row"></th>
               <td>
                 <p className="nomargin"><strong>{pw.name}</strong></p>
                 <p className="text-muted nomargin">{pw.username}</p>
@@ -57,14 +71,11 @@ const SidebarView = observer(({store}) => {
 
 const CenterpaneView = observer(({store}) => {
 
-    let pw = store.passwordA[store.selected];
-
-    //we should use id here instead
-    let fnDelete = (idx) => {
-        store.passwordA.splice(idx, 1);
+    if (!store.passwordA[store.selected]) {
+        return <div>zerostate</div>;
     }
 
-    //todo, if store is empty, display zero state
+    let pw = store.passwordA[store.selected];
 
     return (
     <div>
@@ -91,7 +102,7 @@ const CenterpaneView = observer(({store}) => {
         <br />
       <div className="text-center">
         <button className="btn btn-default">update </button>
-        <button className="btn btn-danger" onClick={fnDelete.bind(this, store.selected)}> delete</button>
+        <button className="btn btn-danger" onClick={store.deleteSelected}> delete</button>
       </div>
     </div>
     )
