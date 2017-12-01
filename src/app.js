@@ -87,10 +87,11 @@ class PasswordForm extends React.Component {
     render() {
 
         let score_to_str = [
-            'bad',
             'weak',
+            'okay',
             'good',
-            'strong'
+            'strong',
+            'very strong'
         ];
         score_to_str[-1] = '';
 
