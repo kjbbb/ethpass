@@ -28,61 +28,128 @@ class Store {
     }
 }
 
-const AddPasswordModal = observer(({store}) => {
+class PasswordForm extends React.Component {
+    constructor(props) {
+        super(props);
 
-    let fnClosePwModal = () => {
-        store.showAddModal = false;
+        this.state = {
+            name: '',
+            username: '',
+            password: '',
+            notes: ''
+        };
+
+        this.handleNameChange = this.handleNameChange.bind(this);
+        this.handleUsernameChange = this.handleUsernameChange.bind(this);
+        this.handlePasswordChange = this.handlePasswordChange.bind(this);
+        this.handleNotesChange = this.handleNotesChange.bind(this);
+
+        this.getData = this.getData.bind(this);
     }
 
-    return (
-    <Modal show={store.showAddModal}
-           onHide={fnClosePwModal}>
-        <Modal.Header closeButton>
-           <Modal.Title>Add Password</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-			<Form horizontal>
-			    <FormGroup controlId="formHorizontalName">
-			    <Col componentClass={ControlLabel} sm={3}>
-			    Name
-			    </Col>
-			    <Col sm={9}>
-			        <FormControl type="name" placeholder="Name" />
-			    </Col>
-			    </FormGroup>
-                <FormGroup controlId="formHorizontalUsername">
-                    <Col componentClass={ControlLabel} sm={3}>
-                    Username or Email
-                    </Col>
-                    <Col sm={9}>
-                        <FormControl type="username" placeholder="Username or Email" />
-			        </Col>
-			    </FormGroup>
-			    <FormGroup controlId="formHorizontalPassword">
-			        <Col componentClass={ControlLabel} sm={3}>
-			        Password
-			        </Col>
-			        <Col sm={9}>
-			            <FormControl type="password" placeholder="Password" />
-			        </Col>
-			    </FormGroup>
-			    <FormGroup controlId="formControlsHorizontalTextarea">
-			        <Col componentClass={ControlLabel} sm={3}>
-			            <ControlLabel>Notes</ControlLabel>
-			        </Col>
-			        <Col sm={9}>
-			            <FormControl componentClass="textarea" placeholder="Notes" />
-			        </Col>
-			    </FormGroup>
-			</Form>
-        </Modal.Body>
-        <Modal.Footer>
-            <Button>Add Password</Button>
-			{' '}
-            <Button onClick={fnClosePwModal}>Close</Button>
-        </Modal.Footer>
-    </Modal>);
-});
+    handleNameChange(e) {
+        this.setState({name: e.target.value});
+    }
+
+    handleUsernameChange(e) {
+        this.setState({username: e.target.value});
+    }
+
+    handlePasswordChange(e) {
+        this.setState({password: e.target.value});
+    }
+
+    handleNotesChange(e) {
+        this.setState({notes: e.target.value});
+    }
+
+    getData() {
+        return this.state;
+    }
+
+    render() {
+        return (
+        <Form horizontal>
+            <FormGroup controlId="formHorizontalName">
+            <Col componentClass={ControlLabel} sm={3}>
+            Name
+            </Col>
+            <Col sm={9}>
+                <FormControl type="name" placeholder="Name"
+                             value={this.state.name}
+                             onChange={this.handleNameChange} />
+            </Col>
+            </FormGroup>
+            <FormGroup controlId="formHorizontalUsername">
+                <Col componentClass={ControlLabel} sm={3}>
+                Username or Email
+                </Col>
+                <Col sm={9}>
+                    <FormControl type="username" placeholder="Username or Email"
+                                 value={this.state.username}
+                                 onChange={this.handleUsernameChange}/>
+                </Col>
+            </FormGroup>
+            <FormGroup controlId="formHorizontalPassword">
+                <Col componentClass={ControlLabel} sm={3}>
+                Password
+                </Col>
+                <Col sm={9}>
+                    <FormControl type="password" placeholder="Password"
+                                 value={this.state.password}
+                                 onChange={this.handlePasswordChange}/>
+                </Col>
+            </FormGroup>
+            <FormGroup controlId="formControlsHorizontalTextarea">
+                <Col componentClass={ControlLabel} sm={3}>
+                    <ControlLabel>Notes</ControlLabel>
+                </Col>
+                <Col sm={9}>
+                    <FormControl componentClass="textarea" placeholder="Notes"
+                                 value={this.state.notes}
+                                 onChange={this.handleNotesChange}/>
+                </Col>
+            </FormGroup>
+        </Form>);
+    }
+}
+
+@observer
+class AddPasswordModal extends React.Component
+{
+    constructor(props) {
+        super(props);
+
+        this.fnAddPassword = this.fnAddPassword.bind(this);
+        this.fnClosePwModal = this.fnClosePwModal.bind(this);
+    }
+
+    fnClosePwModal() {
+        this.props.store.showAddModal = false;
+    }
+
+    fnAddPassword() {
+        console.log(this.passwordForm.getData());
+    }
+
+    render() {
+        return (
+        <Modal show={this.props.store.showAddModal}
+               onHide={this.fnClosePwModal}>
+            <Modal.Header closeButton>
+               <Modal.Title>Add Password</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <PasswordForm ref={(inst) => {this.passwordForm = inst}} />
+            </Modal.Body>
+            <Modal.Footer>
+                <Button onClick={this.fnAddPassword}>Add Password</Button>
+                {' '}
+                <Button onClick={this.fnClosePwModal}>Close</Button>
+            </Modal.Footer>
+        </Modal>);
+    }
+}
 
 const ActionButtons = observer(({store}) => {
 
