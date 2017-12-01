@@ -18,10 +18,9 @@ class Store {
     @observable showAddModal = false;
 
     @action deleteSelected = () => {
-        if (this.passwordA.length) {
+        if (confirm("Are you sure?") && this.passwordA.length) {
             if (this.selected == this.passwordA.length - 1) {
                 this.selected = this.selected - 1;
-                console.log('hit');
             }
             this.passwordA.splice(this.selected, 1);
         }
@@ -36,7 +35,9 @@ class PasswordForm extends React.Component {
             name: '',
             username: '',
             password: '',
-            notes: ''
+            notes: '',
+            ctime: Date.now(),
+            mtime: Date.now()
         };
 
         this.handleNameChange = this.handleNameChange.bind(this);
@@ -64,7 +65,10 @@ class PasswordForm extends React.Component {
     }
 
     getData() {
-        return this.state;
+        let pw = Object.assign({}, this.state);
+        pw.ctime = Date.now();
+        pw.mtime = Date.now();
+        return pw;
     }
 
     render() {
@@ -129,7 +133,11 @@ class AddPasswordModal extends React.Component
     }
 
     fnAddPassword() {
-        console.log(this.passwordForm.getData());
+        let pw = this.passwordForm.getData();
+        this.props.store.passwordA.push(pw);
+        this.fnClosePwModal();
+        this.props.store.selected =
+            this.props.store.passwordA.length - 1;
     }
 
     render() {
@@ -211,6 +219,9 @@ const CenterpaneView = observer(({store}) => {
 
     let pw = store.passwordA[store.selected];
 
+    let ctime = (new Date(pw.ctime)).toString();
+    let mtime = (new Date(pw.mtime)).toString();
+
     return (
     <div>
       <h2 className="text-center">{pw.name}</h2>
@@ -227,8 +238,8 @@ const CenterpaneView = observer(({store}) => {
             <div className="col-xs-9">
               <p>{pw.username}</p>
               <p>{pw.password}</p>
-              <p>{pw.ctime}</p>
-              <p>{pw.mtime}</p>
+              <p>{ctime}</p>
+              <p>{mtime}</p>
               <p>{pw.notes}</p>
             </div>
           </div>
@@ -254,8 +265,8 @@ window.onload = () => {
         name: 'lol',
         username: 'memes',
         password: 'nyancat',
-        ctime: 'nov 1 2017',
-        mtime: 'nov 1 2017',
+        ctime: Date.now(),
+        mtime: Date.now(),
         notes: 'some notes here'
     });
 
@@ -263,8 +274,8 @@ window.onload = () => {
         name: 'second',
         username: 'memers',
         password: 'suprb0',
-        ctime: 'nov 2 2017',
-        mtime: 'nov 2 2017',
+        ctime: Date.now(),
+        mtime: Date.now(),
         notes: 'ayy more notes'
     });
 
@@ -272,8 +283,8 @@ window.onload = () => {
         name: 'feels',
         username: 'good',
         password: 'man',
-        ctime: 'nov 3 2017',
-        mtime: 'nov 3 2017',
+        ctime: Date.now(),
+        mtime: Date.now(),
         notes: 'so many memes'
     });
 
