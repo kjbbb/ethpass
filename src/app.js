@@ -5,8 +5,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {observer} from 'mobx-react';
 import {observable, action} from 'mobx';
-import {Button, Modal, Form, FormControl, FormGroup, Col, Checkbox, ControlLabel} from 'react-bootstrap';
+import {Button, Modal, Form, FormControl, FormGroup, Row, Col, Checkbox, ControlLabel, ProgressBar} from 'react-bootstrap';
 import classnames from 'classnames';
+import zxcvbn from 'zxcvbn';
 
 //var RBS = require('react-bootstrap');
 //var Button = RBS.Button;
@@ -32,12 +33,15 @@ class PasswordForm extends React.Component {
         super(props);
 
         this.state = {
-            name: '',
-            username: '',
-            password: '',
-            notes: '',
-            ctime: Date.now(),
-            mtime: Date.now()
+            data: {
+                name: '',
+                username: '',
+                password: '',
+                notes: '',
+                ctime: Date.now(),
+                mtime: Date.now()
+            },
+            pw_strength: -1
         };
 
         this.handleNameChange = this.handleNameChange.bind(this);
@@ -49,29 +53,47 @@ class PasswordForm extends React.Component {
     }
 
     handleNameChange(e) {
-        this.setState({name: e.target.value});
+        let state = this.state;
+        state.data.name = e.target.value;
+        this.setState(state);
     }
 
     handleUsernameChange(e) {
-        this.setState({username: e.target.value});
+        let state = this.state;
+        state.data.name = e.target.value;
+        this.setState(state);
     }
 
     handlePasswordChange(e) {
-        this.setState({password: e.target.value});
+        let state = this.state;
+        state.data.password = e.target.value;
+        state.pw_strength = zxcvbn(e.target.value).score;
+        this.setState(state);
     }
 
     handleNotesChange(e) {
-        this.setState({notes: e.target.value});
+        let state = this.state;
+        state.data.notes = e.target.value;
+        this.setState(state);
     }
 
     getData() {
-        let pw = Object.assign({}, this.state);
+        let pw = Object.assign({}, this.state.data);
         pw.ctime = Date.now();
         pw.mtime = Date.now();
         return pw;
     }
 
     render() {
+
+        let score_to_str = [
+            'bad',
+            'weak',
+            'good',
+            'strong'
+        ];
+        score_to_str[-1] = '';
+
         return (
         <Form horizontal>
             <FormGroup controlId="formHorizontalName">
@@ -79,8 +101,8 @@ class PasswordForm extends React.Component {
             Name
             </Col>
             <Col sm={9}>
-                <FormControl type="name" placeholder="Name"
-                             value={this.state.name}
+                <FormControl type="text" placeholder="Name"
+                             value={this.state.data.name}
                              onChange={this.handleNameChange} />
             </Col>
             </FormGroup>
@@ -89,8 +111,8 @@ class PasswordForm extends React.Component {
                 Username or Email
                 </Col>
                 <Col sm={9}>
-                    <FormControl type="username" placeholder="Username or Email"
-                                 value={this.state.username}
+                    <FormControl type="text" placeholder="Username or Email"
+                                 value={this.state.data.username}
                                  onChange={this.handleUsernameChange}/>
                 </Col>
             </FormGroup>
@@ -99,18 +121,25 @@ class PasswordForm extends React.Component {
                 Password
                 </Col>
                 <Col sm={9}>
-                    <FormControl type="password" placeholder="Password"
-                                 value={this.state.password}
+                    <FormControl type="text" placeholder="Password"
+                                 value={this.state.data.password}
                                  onChange={this.handlePasswordChange}/>
                 </Col>
             </FormGroup>
+            <Row>
+                <Col sm={3}></Col>
+                <Col sm={9}>
+                    <p><small>password strength: {score_to_str[this.state.pw_strength]}</small></p>
+                    <ProgressBar now={this.state.pw_strength / 4.0 * 100.0} />
+                </Col>
+            </Row>
             <FormGroup controlId="formControlsHorizontalTextarea">
                 <Col componentClass={ControlLabel} sm={3}>
                     <ControlLabel>Notes</ControlLabel>
                 </Col>
                 <Col sm={9}>
                     <FormControl componentClass="textarea" placeholder="Notes"
-                                 value={this.state.notes}
+                                 value={this.state.data.notes}
                                  onChange={this.handleNotesChange}/>
                 </Col>
             </FormGroup>
@@ -134,6 +163,11 @@ class AddPasswordModal extends React.Component
 
     fnAddPassword() {
         let pw = this.passwordForm.getData();
+
+        if (!pw.username || !pw.password) {
+            return false;
+        }
+
         this.props.store.passwordA.push(pw);
         this.fnClosePwModal();
         this.props.store.selected =
