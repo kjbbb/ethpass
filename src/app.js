@@ -8,6 +8,7 @@ import {observable, action} from 'mobx';
 import {Button, Modal, Form, FormControl, FormGroup, Row, Col, Checkbox, ControlLabel, ProgressBar} from 'react-bootstrap';
 import classnames from 'classnames';
 import zxcvbn from 'zxcvbn';
+import pwgen from 'generate-password';
 
 //var RBS = require('react-bootstrap');
 //var Button = RBS.Button;
@@ -41,7 +42,10 @@ class PasswordForm extends React.Component {
                 ctime: Date.now(),
                 mtime: Date.now()
             },
-            pw_strength: -1
+            pw_strength: -1,
+            pw_numbers: true,
+            pw_symbols: false,
+            pw_uppercase: false
         };
 
         this.handleNameChange = this.handleNameChange.bind(this);
@@ -50,6 +54,12 @@ class PasswordForm extends React.Component {
         this.handleNotesChange = this.handleNotesChange.bind(this);
 
         this.getData = this.getData.bind(this);
+
+        this.pwGen = this.pwGen.bind(this);
+
+        this.updPwNumbers = this.updPwNumbers.bind(this);
+        this.updPwUppercase = this.updPwUppercase.bind(this);
+        this.updPwSymbols = this.updPwSymbols.bind(this);
     }
 
     handleNameChange(e) {
@@ -60,7 +70,7 @@ class PasswordForm extends React.Component {
 
     handleUsernameChange(e) {
         let state = this.state;
-        state.data.name = e.target.value;
+        state.data.username = e.target.value;
         this.setState(state);
     }
 
@@ -82,6 +92,39 @@ class PasswordForm extends React.Component {
         pw.ctime = Date.now();
         pw.mtime = Date.now();
         return pw;
+    }
+
+    pwGen() {
+        let pw = pwgen.generate({
+            length: 12,
+            numbers: this.state.pw_numbers,
+            uppercase: this.state.pw_uppercase,
+            symbols: this.state.pw_symbols
+        });
+
+        let state = this.state;
+        state.data.password = pw;
+        state.pw_strength = zxcvbn(pw).score;
+        this.setState(state);
+    }
+
+    updPwNumbers(e) {
+        console.log(e);
+        let state = this.state;
+        state.pw_numbers = e.target.checked;
+        this.setState(state);
+    }
+
+    updPwUppercase(e) {
+        let state = this.state;
+        state.pw_uppercase = e.target.checked;
+        this.setState(state);
+    }
+
+    updPwSymbols(e) {
+        let state = this.state;
+        state.pw_symbols = e.target.checked;
+        this.setState(state);
     }
 
     render() {
@@ -132,8 +175,18 @@ class PasswordForm extends React.Component {
                 <Col sm={9}>
                     <p><small>password strength: {score_to_str[this.state.pw_strength]}</small></p>
                     <ProgressBar now={this.state.pw_strength / 4.0 * 100.0} />
+                    {' '}
+                    <Button bsSize="xsmall"
+                            onClick={this.pwGen}>Generate password</Button>{' '}
+                        <Checkbox inline checked={this.state.pw_numbers}
+                                onChange={this.updPwNumbers}><small>numbers</small></Checkbox>
+                        <Checkbox inline checked={this.state.pw_uppercase}
+                                onChange={this.updPwUppercase}><small>uppercase</small></Checkbox>
+                        <Checkbox inline checked={this.state.pw_symbols}
+                                onChange={this.updPwSymbols}><small>symbols</small></Checkbox>
                 </Col>
             </Row>
+            <br />
             <FormGroup controlId="formControlsHorizontalTextarea">
                 <Col componentClass={ControlLabel} sm={3}>
                     <ControlLabel>Notes</ControlLabel>
