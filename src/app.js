@@ -9,11 +9,17 @@ import {Button, Modal, Form, FormControl, FormGroup, Row, Col, Checkbox, Control
 import classnames from 'classnames';
 import zxcvbn from 'zxcvbn';
 import pwgen from 'generate-password';
+import contract from './contract.js';
 
-//var RBS = require('react-bootstrap');
-//var Button = RBS.Button;
+class Store
+{
+    constructor() {
+        setTimeout(() => {
+            this.contract = contract.load();
+            this.load();
+        }, 100);
+    }
 
-class Store {
     @observable passwordA = [];
     @observable selected = 2;
 
@@ -26,6 +32,29 @@ class Store {
             }
             this.passwordA.splice(this.selected, 1);
         }
+    }
+
+    @action sync = () => {
+        let json = JSON.stringify(this.passwordA);
+        let trxnOpt = {gas: '2000000', gasPrice: '4000000000'};
+        this.contract.set(json, trxnOpt, (err, res) => {
+            console.log(err, res);
+        });
+    }
+
+    @action load = () => {
+        this.contract.get((err, res) => {
+            if (!err) {
+                try {
+                    let pwA = JSON.parse(res);
+                    this.passwordA = pwA;
+                }
+                catch (e) {
+                    this.passwordA = [];
+                    //todo display error
+                }
+            }
+        });
     }
 }
 
@@ -253,11 +282,16 @@ const ActionButtons = observer(({store}) => {
         store.showAddModal = true;
     }
 
+	let fnSync = () => {
+        store.sync();
+	}
+
     return (
     <div>
         <button className="btn btn-default"
                 onClick={fnOpenPwModal}>+ add password</button>{' '}
-        <button className="btn btn-default">+ sync to blockchain</button>{' '}
+        <button className="btn btn-default"
+                onClick={fnSync}>+ sync to blockchain</button>{' '}
         <button className="btn btn-default">+ download your data</button>{' '}
         <AddPasswordModal store={store} />
     </div>
