@@ -5,7 +5,7 @@ var Web3 = require('web3');
 //todo, add dev and production mode
 web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
-var contract = fs.readFileSync('./password.sol', 'utf-8');
+var contract = fs.readFileSync('./contracts/password.sol', 'utf-8');
 
 var compiled = solc.compile(contract, 1);
 
