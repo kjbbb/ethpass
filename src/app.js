@@ -324,6 +324,41 @@ const SidebarView = observer(({store}) => {
       </div>);
 });
 
+class PasswordView extends React.Component
+{
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            show: false,
+        };
+
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    //set show to false when the password changes
+    componentWillReceiveProps(nextProps) {
+        this.setState((prevState) => ({
+            show: false
+        }));
+    }
+
+    handleClick() {
+        this.setState((prevState) => ({
+            show: true
+        }));
+    }
+
+    render() {
+        if (this.state.show) {
+            return this.props.password;
+        }
+        else {
+            return <a onClick={this.handleClick}>click to show</a>;
+        }
+    }
+}
+
 const CenterpaneView = observer(({store}) => {
 
     if (!store.passwordA[store.selected]) {
@@ -350,7 +385,7 @@ const CenterpaneView = observer(({store}) => {
             </div>
             <div className="col-xs-9">
               <p>{pw.username}</p>
-              <p>{pw.password}</p>
+              <p><PasswordView password={pw.password} /></p>
               <p>{ctime}</p>
               <p>{mtime}</p>
               <p>{pw.notes}</p>
