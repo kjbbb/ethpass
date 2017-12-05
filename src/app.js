@@ -58,69 +58,23 @@ class Store
     }
 }
 
-class PasswordForm extends React.Component {
+class PasswordGenerator extends React.Component
+{
     constructor(props) {
         super(props);
 
         this.state = {
-            data: {
-                name: '',
-                username: '',
-                password: '',
-                notes: '',
-                ctime: Date.now(),
-                mtime: Date.now()
-            },
             pw_strength: -1,
             pw_numbers: true,
             pw_symbols: false,
             pw_uppercase: false
-        };
-
-        this.handleNameChange = this.handleNameChange.bind(this);
-        this.handleUsernameChange = this.handleUsernameChange.bind(this);
-        this.handlePasswordChange = this.handlePasswordChange.bind(this);
-        this.handleNotesChange = this.handleNotesChange.bind(this);
-
-        this.getData = this.getData.bind(this);
-
-        this.pwGen = this.pwGen.bind(this);
+        }
 
         this.updPwNumbers = this.updPwNumbers.bind(this);
         this.updPwUppercase = this.updPwUppercase.bind(this);
         this.updPwSymbols = this.updPwSymbols.bind(this);
-    }
 
-    handleNameChange(e) {
-        let state = this.state;
-        state.data.name = e.target.value;
-        this.setState(state);
-    }
-
-    handleUsernameChange(e) {
-        let state = this.state;
-        state.data.username = e.target.value;
-        this.setState(state);
-    }
-
-    handlePasswordChange(e) {
-        let state = this.state;
-        state.data.password = e.target.value;
-        state.pw_strength = zxcvbn(e.target.value).score;
-        this.setState(state);
-    }
-
-    handleNotesChange(e) {
-        let state = this.state;
-        state.data.notes = e.target.value;
-        this.setState(state);
-    }
-
-    getData() {
-        let pw = Object.assign({}, this.state.data);
-        pw.ctime = Date.now();
-        pw.mtime = Date.now();
-        return pw;
+        this.pwGen = this.pwGen.bind(this);
     }
 
     pwGen() {
@@ -132,9 +86,10 @@ class PasswordForm extends React.Component {
         });
 
         let state = this.state;
-        state.data.password = pw;
         state.pw_strength = zxcvbn(pw).score;
         this.setState(state);
+
+        this.props.setPassword(pw);
     }
 
     updPwNumbers(e) {
@@ -168,15 +123,76 @@ class PasswordForm extends React.Component {
         score_to_str[-1] = '';
 
         return (
+        <div>
+            <p><small>password strength: {score_to_str[this.state.pw_strength]}</small></p>
+            <ProgressBar now={this.state.pw_strength / 4.0 * 100.0} />
+            {' '}
+            <Button bsSize="xsmall"
+                    onClick={this.pwGen}>Generate password</Button>{' '}
+                <Checkbox inline checked={this.state.pw_numbers}
+                        onChange={this.updPwNumbers}><small>numbers</small></Checkbox>
+                <Checkbox inline checked={this.state.pw_uppercase}
+                        onChange={this.updPwUppercase}><small>uppercase</small></Checkbox>
+                <Checkbox inline checked={this.state.pw_symbols}
+                        onChange={this.updPwSymbols}><small>symbols</small></Checkbox>
+        </div>);
+    }
+}
+
+class PasswordForm extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            data: {
+                name: '',
+                username: '',
+                password: '',
+                notes: '',
+                ctime: Date.now(),
+                mtime: Date.now()
+            },
+        };
+
+        this.handleInputChange = this.handleInputChange.bind(this);
+
+        this.getData = this.getData.bind(this);
+
+        this.setPassword = this.setPassword.bind(this);
+    }
+
+    handleInputChange(e) {
+        let state = this.state;
+        state.data[e.target.name] = e.target.value;
+        console.log(state.data);
+        this.setState(state);
+    }
+
+    getData() {
+        let pw = Object.assign({}, this.state.data);
+        pw.ctime = Date.now();
+        pw.mtime = Date.now();
+        return pw;
+    }
+
+    setPassword(pw) {
+        let state = this.state;
+        state.data.password = pw;
+        this.setState(state);
+    }
+
+    render() {
+
+        return (
         <Form horizontal>
             <FormGroup controlId="formHorizontalName">
             <Col componentClass={ControlLabel} sm={3}>
             Name
             </Col>
             <Col sm={9}>
-                <FormControl type="text" placeholder="Name"
+                <FormControl name="name" type="text" placeholder="Name"
                              value={this.state.data.name}
-                             onChange={this.handleNameChange} />
+                             onChange={this.handleInputChange} />
             </Col>
             </FormGroup>
             <FormGroup controlId="formHorizontalUsername">
@@ -184,9 +200,10 @@ class PasswordForm extends React.Component {
                 Username or Email
                 </Col>
                 <Col sm={9}>
-                    <FormControl type="text" placeholder="Username or Email"
+                    <FormControl name="username" type="text"
+                                 placeholder="Username or Email"
                                  value={this.state.data.username}
-                                 onChange={this.handleUsernameChange}/>
+                                 onChange={this.handleInputChange}/>
                 </Col>
             </FormGroup>
             <FormGroup controlId="formHorizontalPassword">
@@ -194,25 +211,16 @@ class PasswordForm extends React.Component {
                 Password
                 </Col>
                 <Col sm={9}>
-                    <FormControl type="text" placeholder="Password"
+                    <FormControl name="password" type="text"
+                                 placeholder="Password"
                                  value={this.state.data.password}
-                                 onChange={this.handlePasswordChange}/>
+                                 onChange={this.handleInputChange}/>
                 </Col>
             </FormGroup>
             <Row>
                 <Col sm={3}></Col>
                 <Col sm={9}>
-                    <p><small>password strength: {score_to_str[this.state.pw_strength]}</small></p>
-                    <ProgressBar now={this.state.pw_strength / 4.0 * 100.0} />
-                    {' '}
-                    <Button bsSize="xsmall"
-                            onClick={this.pwGen}>Generate password</Button>{' '}
-                        <Checkbox inline checked={this.state.pw_numbers}
-                                onChange={this.updPwNumbers}><small>numbers</small></Checkbox>
-                        <Checkbox inline checked={this.state.pw_uppercase}
-                                onChange={this.updPwUppercase}><small>uppercase</small></Checkbox>
-                        <Checkbox inline checked={this.state.pw_symbols}
-                                onChange={this.updPwSymbols}><small>symbols</small></Checkbox>
+                    <PasswordGenerator setPassword={this.setPassword}/>
                 </Col>
             </Row>
             <br />
@@ -222,8 +230,9 @@ class PasswordForm extends React.Component {
                 </Col>
                 <Col sm={9}>
                     <FormControl componentClass="textarea" placeholder="Notes"
+                                 name="notes"
                                  value={this.state.data.notes}
-                                 onChange={this.handleNotesChange}/>
+                                 onChange={this.handleInputChange}/>
                 </Col>
             </FormGroup>
         </Form>);
@@ -368,7 +377,7 @@ const CenterpaneView = observer(({store}) => {
         </div>
         <br />
       <div className="text-center">
-        <button className="btn btn-default">update</button>{' '}
+        <button className="btn btn-default" onClick={store.editSelected}>Edit</button>{' '}
         <button className="btn btn-danger" onClick={store.deleteSelected}>delete</button>
       </div>
     </div>
