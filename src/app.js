@@ -129,14 +129,12 @@ class PasswordForm extends React.Component {
         super(props);
 
         this.state = {
-            data: {
-                name: '',
-                username: '',
-                password: '',
-                notes: '',
-                ctime: Date.now(),
-                mtime: Date.now()
-            },
+            name: '',
+            username: '',
+            password: '',
+            notes: '',
+            ctime: Date.now(),
+            mtime: Date.now()
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -148,21 +146,20 @@ class PasswordForm extends React.Component {
 
     handleInputChange(e) {
         let state = this.state;
-        state.data[e.target.name] = e.target.value;
-        console.log(state.data);
+        state[e.target.name] = e.target.value;
         this.setState(state);
     }
 
     getData() {
-        let pw = Object.assign({}, this.state.data);
-        pw.ctime = Date.now();
+        let pw = Object.assign({}, this.state);
+        pw.ctime = Date.now(); //fixme why
         pw.mtime = Date.now();
         return pw;
     }
 
     setPassword(pw) {
         let state = this.state;
-        state.data.password = pw;
+        state.password = pw;
         this.setState(state);
     }
 
@@ -176,7 +173,7 @@ class PasswordForm extends React.Component {
             </Col>
             <Col sm={9}>
                 <FormControl name="name" type="text" placeholder="Name"
-                             value={this.state.data.name}
+                             value={this.state.name}
                              onChange={this.handleInputChange} />
             </Col>
             </FormGroup>
@@ -187,7 +184,7 @@ class PasswordForm extends React.Component {
                 <Col sm={9}>
                     <FormControl name="username" type="text"
                                  placeholder="Username or Email"
-                                 value={this.state.data.username}
+                                 value={this.state.username}
                                  onChange={this.handleInputChange}/>
                 </Col>
             </FormGroup>
@@ -198,7 +195,7 @@ class PasswordForm extends React.Component {
                 <Col sm={9}>
                     <FormControl name="password" type="text"
                                  placeholder="Password"
-                                 value={this.state.data.password}
+                                 value={this.state.password}
                                  onChange={this.handleInputChange}/>
                 </Col>
             </FormGroup>
@@ -216,7 +213,7 @@ class PasswordForm extends React.Component {
                 <Col sm={9}>
                     <FormControl componentClass="textarea" placeholder="Notes"
                                  name="notes"
-                                 value={this.state.data.notes}
+                                 value={this.state.notes}
                                  onChange={this.handleInputChange}/>
                 </Col>
             </FormGroup>
