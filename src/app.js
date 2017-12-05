@@ -64,15 +64,13 @@ class PasswordGenerator extends React.Component
         super(props);
 
         this.state = {
-            pw_strength: -1,
-            pw_numbers: true,
-            pw_symbols: false,
-            pw_uppercase: false
+            strength: -1,
+            numbers: true,
+            symbols: false,
+            uppercase: false
         }
 
-        this.updPwNumbers = this.updPwNumbers.bind(this);
-        this.updPwUppercase = this.updPwUppercase.bind(this);
-        this.updPwSymbols = this.updPwSymbols.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
 
         this.pwGen = this.pwGen.bind(this);
     }
@@ -80,35 +78,22 @@ class PasswordGenerator extends React.Component
     pwGen() {
         let pw = pwgen.generate({
             length: 12,
-            numbers: this.state.pw_numbers,
-            uppercase: this.state.pw_uppercase,
-            symbols: this.state.pw_symbols
+            numbers: this.state.numbers,
+            uppercase: this.state.uppercase,
+            symbols: this.state.symbols
         });
 
         let state = this.state;
-        state.pw_strength = zxcvbn(pw).score;
+        state.strength = zxcvbn(pw).score;
         this.setState(state);
 
         this.props.setPassword(pw);
     }
 
-    updPwNumbers(e) {
-        console.log(e);
-        let state = this.state;
-        state.pw_numbers = e.target.checked;
-        this.setState(state);
-    }
-
-    updPwUppercase(e) {
-        let state = this.state;
-        state.pw_uppercase = e.target.checked;
-        this.setState(state);
-    }
-
-    updPwSymbols(e) {
-        let state = this.state;
-        state.pw_symbols = e.target.checked;
-        this.setState(state);
+    handleInputChange(e) {
+        let s = this.state;
+        s[e.target.name] = e.target.checked;
+        this.setState(s);
     }
 
     render() {
@@ -124,17 +109,17 @@ class PasswordGenerator extends React.Component
 
         return (
         <div>
-            <p><small>password strength: {score_to_str[this.state.pw_strength]}</small></p>
-            <ProgressBar now={this.state.pw_strength / 4.0 * 100.0} />
+            <p><small>password strength: {score_to_str[this.state.strength]}</small></p>
+            <ProgressBar now={this.state.strength / 4.0 * 100.0} />
             {' '}
             <Button bsSize="xsmall"
                     onClick={this.pwGen}>Generate password</Button>{' '}
-                <Checkbox inline checked={this.state.pw_numbers}
-                        onChange={this.updPwNumbers}><small>numbers</small></Checkbox>
-                <Checkbox inline checked={this.state.pw_uppercase}
-                        onChange={this.updPwUppercase}><small>uppercase</small></Checkbox>
-                <Checkbox inline checked={this.state.pw_symbols}
-                        onChange={this.updPwSymbols}><small>symbols</small></Checkbox>
+                <Checkbox inline checked={this.state.numbers} name="numbers"
+                        onChange={this.handleInputChange}><small>numbers</small></Checkbox>
+                <Checkbox inline checked={this.state.uppercase} name="uppercase"
+                        onChange={this.handleInputChange}><small>uppercase</small></Checkbox>
+                <Checkbox inline checked={this.state.symbols} name="symbols"
+                        onChange={this.handleInputChange}><small>symbols</small></Checkbox>
         </div>);
     }
 }
