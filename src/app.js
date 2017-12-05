@@ -10,6 +10,8 @@ import classnames from 'classnames';
 import zxcvbn from 'zxcvbn';
 import pwgen from 'generate-password';
 import contract from './contract.js';
+import aesjs from 'aes-js';
+import createHistory from 'history/createBrowserHistory';
 
 class Store
 {
@@ -22,6 +24,7 @@ class Store
 
     @observable passwordA = [];
     @observable selected = 2;
+    @observable aes256key = 0;
 
     @observable showAddModal = false;
 
@@ -53,6 +56,16 @@ class Store
                     this.passwordA = [];
                     //todo display error
                 }
+            }
+        });
+    }
+
+    @action signIn = () => {
+        const hex = web3.fromUtf8('CryptoPass');
+        web3.personal.sign(hex, web3.eth.accounts[0], (err, result) => {
+            if (!err) {
+                const aeshex = result.substr(2).substr(0, 32);
+                this.aes256key = aesjs.utils.utf8.toBytes(aeshex);
             }
         });
     }
@@ -277,6 +290,10 @@ const ActionButtons = observer(({store}) => {
         store.sync();
 	}
 
+    if (store.passwordA.length == 0) {
+        return <h1>&nbsp;</h1>
+    }
+
     return (
     <div>
         <button className="btn btn-default"
@@ -362,7 +379,10 @@ class PasswordView extends React.Component
 const CenterpaneView = observer(({store}) => {
 
     if (!store.passwordA[store.selected]) {
-        return <div>zerostate</div>;
+        return (
+            <div className="text-center">
+                <Button onClick={store.signIn}>Sign into CryptoPass</Button>
+            </div>);
     }
 
     let pw = store.passwordA[store.selected];
@@ -409,32 +429,32 @@ window.onload = () => {
     let store = new Store();
     store.selected = 0;
 
-    store.passwordA.push({
-        name: 'lol',
-        username: 'memes',
-        password: 'nyancat',
-        ctime: Date.now(),
-        mtime: Date.now(),
-        notes: 'some notes here'
-    });
+    //store.passwordA.push({
+    //    name: 'lol',
+    //    username: 'memes',
+    //    password: 'nyancat',
+    //    ctime: Date.now(),
+    //    mtime: Date.now(),
+    //    notes: 'some notes here'
+    //});
 
-    store.passwordA.push({
-        name: 'second',
-        username: 'memers',
-        password: 'suprb0',
-        ctime: Date.now(),
-        mtime: Date.now(),
-        notes: 'ayy more notes'
-    });
+    //store.passwordA.push({
+    //    name: 'second',
+    //    username: 'memers',
+    //    password: 'suprb0',
+    //    ctime: Date.now(),
+    //    mtime: Date.now(),
+    //    notes: 'ayy more notes'
+    //});
 
-    store.passwordA.push({
-        name: 'feels',
-        username: 'good',
-        password: 'man',
-        ctime: Date.now(),
-        mtime: Date.now(),
-        notes: 'so many memes'
-    });
+    //store.passwordA.push({
+    //    name: 'feels',
+    //    username: 'good',
+    //    password: 'man',
+    //    ctime: Date.now(),
+    //    mtime: Date.now(),
+    //    notes: 'so many memes'
+    //});
 
     ReactDOM.render(<SidebarView store={store} />, document.getElementById("sidebar"));
     ReactDOM.render(<CenterpaneView store={store} />, document.getElementById("centerpane"));
