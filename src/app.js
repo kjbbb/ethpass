@@ -376,14 +376,14 @@ class PasswordView extends React.Component
     }
 }
 
-const CenterpaneView = observer(({store}) => {
+const SignInView = observer(({store}) => {
+    return (
+        <div className="text-center">
+            <Button onClick={store.signIn}>Sign into CryptoPass</Button>
+        </div>);
+});
 
-    if (!store.passwordA[store.selected]) {
-        return (
-            <div className="text-center">
-                <Button onClick={store.signIn}>Sign into CryptoPass</Button>
-            </div>);
-    }
+const CenterpaneView = observer(({store}) => {
 
     let pw = store.passwordA[store.selected];
 
@@ -421,6 +421,33 @@ const CenterpaneView = observer(({store}) => {
     )
 });
 
+const App = observer(({store}) => {
+    if (!store.aes256key) {
+        return (<SignInView store={store} />);
+    }
+    return (
+    <div>
+      <div className="row">
+        <div className="col-xs-4 bg-light fill-vertical shadow">
+            <SidebarView store={store} />
+        </div>
+        <div className="col-xs-8">
+          <br />
+          <div className="container">
+            <div className="row">
+              <div className="col-xs-1"></div>
+              <div className="col-xs-11">
+                <ActionButtons store={store} />
+              </div>
+             </div>
+          </div>
+          <br />
+            <CenterpaneView store={store} />
+        </div>
+      </div>
+    </div>);
+});
+
 window.onload = () => {
 
     //let Contract = web3.eth.contract(contract.abi);
@@ -429,14 +456,16 @@ window.onload = () => {
     let store = new Store();
     store.selected = 0;
 
-    //store.passwordA.push({
-    //    name: 'lol',
-    //    username: 'memes',
-    //    password: 'nyancat',
-    //    ctime: Date.now(),
-    //    mtime: Date.now(),
-    //    notes: 'some notes here'
-    //});
+    ReactDOM.render(<App store={store} />, document.getElementById("app"));
+
+    store.passwordA.push({
+        name: 'lol',
+        username: 'memes',
+        password: 'nyancat',
+        ctime: Date.now(),
+        mtime: Date.now(),
+        notes: 'some notes here'
+    });
 
     //store.passwordA.push({
     //    name: 'second',
@@ -456,7 +485,4 @@ window.onload = () => {
     //    notes: 'so many memes'
     //});
 
-    ReactDOM.render(<SidebarView store={store} />, document.getElementById("sidebar"));
-    ReactDOM.render(<CenterpaneView store={store} />, document.getElementById("centerpane"));
-    ReactDOM.render(<ActionButtons store={store} />, document.getElementById("actionbuttons"));
 }
