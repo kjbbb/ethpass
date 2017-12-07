@@ -12,6 +12,7 @@ import pwgen from 'generate-password';
 import contract from './contract.js';
 import aesjs from 'aes-js';
 import createHistory from 'history/createBrowserHistory';
+import encrypt from './encrypt.js';
 
 class Store
 {
@@ -39,9 +40,16 @@ class Store
     }
 
     @action sync = () => {
-        let json = JSON.stringify(this.passwordA);
+
+        if (!this.passwordA || this.passwordA.length == 0) {
+            console.log('empty password array, sync aborted');
+            return;
+        }
+
+        let payload = encrypt.generatePayloadHex(this.aes256key, this.passwordA);
+
         let trxnOpt = {gas: '2000000', gasPrice: '4000000000'};
-        this.contract.set(json, trxnOpt, (err, res) => {
+        this.contract.set(payload, trxnOpt, (err, res) => {
             if (err) {
                 this.errA.push(err);
             }
@@ -55,7 +63,7 @@ class Store
         this.contract.get((err, res) => {
             if (!err) {
                 try {
-                    let pwA = JSON.parse(res);
+                    let pwA = encrypt.readPayloadHex(this.aes256key, res);
                     this.passwordA = pwA;
                 }
                 catch (e) {
