@@ -22,8 +22,9 @@ class Store
         }, 100);
     }
 
+    @observable errA = [];
     @observable passwordA = [];
-    @observable selected = 2;
+    @observable selected = 0;
     @observable aes256key = 0;
 
     @observable showAddModal = false;
@@ -41,7 +42,12 @@ class Store
         let json = JSON.stringify(this.passwordA);
         let trxnOpt = {gas: '2000000', gasPrice: '4000000000'};
         this.contract.set(json, trxnOpt, (err, res) => {
-            console.log(err, res);
+            if (err) {
+                this.errA.push(err);
+            }
+            else {
+                
+            }
         });
     }
 
@@ -54,8 +60,11 @@ class Store
                 }
                 catch (e) {
                     this.passwordA = [];
-                    //todo display error
+                    this.errA.push(e);
                 }
+            }
+            else {
+                this.errA.push(err);
             }
         });
     }
@@ -66,10 +75,21 @@ class Store
             if (!err) {
                 const aeshex = result.substr(2).substr(0, 32);
                 this.aes256key = aesjs.utils.utf8.toBytes(aeshex);
+                this.load();
             }
         });
     }
 }
+
+const ErrorBox = observer(({store}) => {
+    return (
+        <div>
+            {store.errA.map((err) => {
+                <p class="text-danger">{err}</p>
+            })}
+        </div>
+    );
+});
 
 class PasswordGenerator extends React.Component
 {
@@ -290,10 +310,6 @@ const ActionButtons = observer(({store}) => {
         store.sync();
 	}
 
-    if (store.passwordA.length == 0) {
-        return <h1>&nbsp;</h1>
-    }
-
     return (
     <div>
         <button className="btn btn-default"
@@ -385,6 +401,10 @@ const SignInView = observer(({store}) => {
 
 const CenterpaneView = observer(({store}) => {
 
+    if (store.passwordA.length == 0) {
+        return <div><p>zerostate</p></div>;
+    }
+
     let pw = store.passwordA[store.selected];
 
     let ctime = (new Date(pw.ctime)).toString();
@@ -425,6 +445,7 @@ const App = observer(({store}) => {
     if (!store.aes256key) {
         return (<SignInView store={store} />);
     }
+
     return (
     <div>
       <div className="row">
@@ -442,7 +463,7 @@ const App = observer(({store}) => {
              </div>
           </div>
           <br />
-            <CenterpaneView store={store} />
+          <CenterpaneView store={store} />
         </div>
       </div>
     </div>);
@@ -450,39 +471,7 @@ const App = observer(({store}) => {
 
 window.onload = () => {
 
-    //let Contract = web3.eth.contract(contract.abi);
-    //ContractInst = Contract.at(contract.address);
-
     let store = new Store();
-    store.selected = 0;
 
     ReactDOM.render(<App store={store} />, document.getElementById("app"));
-
-    store.passwordA.push({
-        name: 'lol',
-        username: 'memes',
-        password: 'nyancat',
-        ctime: Date.now(),
-        mtime: Date.now(),
-        notes: 'some notes here'
-    });
-
-    //store.passwordA.push({
-    //    name: 'second',
-    //    username: 'memers',
-    //    password: 'suprb0',
-    //    ctime: Date.now(),
-    //    mtime: Date.now(),
-    //    notes: 'ayy more notes'
-    //});
-
-    //store.passwordA.push({
-    //    name: 'feels',
-    //    username: 'good',
-    //    password: 'man',
-    //    ctime: Date.now(),
-    //    mtime: Date.now(),
-    //    notes: 'so many memes'
-    //});
-
 }
