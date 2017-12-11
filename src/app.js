@@ -19,14 +19,18 @@ class Store
     constructor() {
         setTimeout(() => {
             this.contract = contract.load();
-            this.load();
         }, 100);
     }
 
     @observable errA = [];
     @observable passwordA = [];
     @observable selected = 0;
-    @observable aes256key = 0;
+    @observable key256 = 0;
+
+    //sign in
+    @observable password = '';
+    @observable signedIn = false;
+    @observable signInErr = false;
 
     @observable showAddModal = false;
 
@@ -46,7 +50,7 @@ class Store
             return;
         }
 
-        let payload = encrypt.generatePayloadHex(this.aes256key, this.passwordA);
+        let payload = encrypt.generatePayloadHex(this.key256, this.passwordA);
 
         let trxnOpt = {gas: '2000000', gasPrice: '4000000000'};
         this.contract.set(payload, trxnOpt, (err, res) => {
@@ -59,31 +63,46 @@ class Store
         });
     }
 
-    @action load = () => {
-        this.contract.get((err, res) => {
-            if (!err) {
-                try {
-                    let pwA = encrypt.readPayloadHex(this.aes256key, res);
-                    this.passwordA = pwA;
-                }
-                catch (e) {
-                    this.passwordA = [];
-                    this.errA.push(e);
-                }
-            }
-            else {
-                this.errA.push(err);
-            }
-        });
-    }
-
     @action signIn = () => {
         const hex = web3.fromUtf8('CryptoPass');
-        web3.personal.sign(hex, web3.eth.accounts[0], (err, result) => {
+        web3.personal.sign(hex, web3.eth.accounts[0], (err, sighex) => {
             if (!err) {
-                const aeshex = result.substr(2).substr(0, 32);
-                this.aes256key = aesjs.utils.utf8.toBytes(aeshex);
-                this.load();
+                if (this.password) {
+                    this.key256 = encrypt.genKey256(sighex, this.password);
+                }
+                else {
+                    let keyhex = sighex.substr(2).substr(0, 32);
+                    this.key256 = aesjs.utils.utf8.toBytes(keyhex);
+                }
+
+                this.contract.get((err, res) => {
+                    if (!err) {
+                        //returned empty data, means user likely didn't store any passwords yet
+                        if (!res) {
+                            this.signedIn = true;
+                        }
+                        //user has data stored, try to decrypt and load it
+                        else {
+                            let blob = aesjs.utils.utf8.toBytes(res);
+                            try {
+                                let pwA = encrypt.decryptPassword(this.key256, blob);
+                                this.passwordA = pwA;
+                                this.signedIn = true;
+                            } catch(msg) {
+                                //couldn't decrypt data.
+                                this.signInErr = 'Invalid password. Try again';
+                            }
+                        }
+                    }
+                    else {
+                        console.log(err);
+                        //web3 error probably
+                        this.signInErr = 'Couldn\'t read from contract, aborting';
+                    }
+                });
+            }
+            else {
+                //todo error
             }
         });
     }
@@ -401,9 +420,23 @@ class PasswordView extends React.Component
 }
 
 const SignInView = observer(({store}) => {
+    let handlePasswordChange = (e) => {
+        store.password = e.target.value;
+    };
     return (
         <div className="text-center">
+            <h1>Sign into CryptoPass</h1>
+            <p>No signup required. Password is optional, but highly recommended.</p>
+            <br />
+            <input className="form-control" type="password"
+                   value={store.password}
+                   placeholder="password (optional)"
+                   onChange={handlePasswordChange} />
+            <br />
             <Button onClick={store.signIn}>Sign into CryptoPass</Button>
+            {store.signInErr &&
+                <p className="text-danger">{store.signInErr}</p>
+            }
         </div>);
 });
 
@@ -450,7 +483,7 @@ const CenterpaneView = observer(({store}) => {
 });
 
 const App = observer(({store}) => {
-    if (!store.aes256key) {
+    if (!store.signedIn) {
         return (<SignInView store={store} />);
     }
 
