@@ -92,9 +92,9 @@ function decryptPassword(key256, encryptedBlob) {
 //generate a 256 bit key with 10000 rounds of sha256 pbkfs2
 function genKey256(password, salt) {
 
-  if (password.length < 8)
+  if (password.length < 6)
     throw 'pbkdf2 password too short';
-  if (salt.length < 8)
+  if (salt.length < 6)
     throw 'pbkdf2 salt length too short';
 
   let key256 = pbkdf2.pbkdf2Sync(password, salt, 10000, 256 / 8, 'sha256');

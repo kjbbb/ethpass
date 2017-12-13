@@ -28,7 +28,6 @@ class Store
     @observable key256 = 0;
 
     //sign in
-    @observable password = '';
     @observable signedIn = false;
     @observable signInErr = false;
 
@@ -64,16 +63,12 @@ class Store
     }
 
     @action signIn = () => {
+
         const hex = web3.fromUtf8('CryptoPass');
         web3.personal.sign(hex, web3.eth.accounts[0], (err, sighex) => {
             if (!err) {
-                if (this.password) {
-                    this.key256 = encrypt.genKey256(sighex, this.password);
-                }
-                else {
-                    let keyhex = sighex.substr(2).substr(0, 32);
-                    this.key256 = aesjs.utils.utf8.toBytes(keyhex);
-                }
+                let keyhex = sighex.substr(2).substr(0, 32);
+                this.key256 = aesjs.utils.utf8.toBytes(keyhex);
 
                 this.contract.get((err, res) => {
                     if (!err) {
@@ -90,33 +85,25 @@ class Store
                                 this.signedIn = true;
                             } catch(msg) {
                                 //couldn't decrypt data.
-                                this.signInErr = 'Invalid password. Try again';
+                                this.signInErr = 'Coudln\'t decrypt data. Invalid key.';
                             }
                         }
                     }
                     else {
                         console.log(err);
                         //web3 error probably
-                        this.signInErr = 'Couldn\'t read from contract, aborting';
+                        this.signInErr = 'Couldn\'t connect to ethereum, make sure ' +
+                            'MetaMask is installed and working correctly, and that ' +
+                            'you\'re connected to the right network';
                     }
                 });
             }
             else {
-                //todo error
+                this.signInErr = 'web3.eth.personal_sign error: ' + err;
             }
         });
     }
 }
-
-const ErrorBox = observer(({store}) => {
-    return (
-        <div>
-            {store.errA.map((err) => {
-                <p class="text-danger">{err}</p>
-            })}
-        </div>
-    );
-});
 
 class PasswordGenerator extends React.Component
 {
@@ -420,18 +407,9 @@ class PasswordView extends React.Component
 }
 
 const SignInView = observer(({store}) => {
-    let handlePasswordChange = (e) => {
-        store.password = e.target.value;
-    };
     return (
         <div className="text-center">
             <h1>Sign into CryptoPass</h1>
-            <p>No signup required. Password is optional, but highly recommended.</p>
-            <br />
-            <input className="form-control" type="password"
-                   value={store.password}
-                   placeholder="password (optional)"
-                   onChange={handlePasswordChange} />
             <br />
             <Button onClick={store.signIn}>Sign into CryptoPass</Button>
             {store.signInErr &&
@@ -440,10 +418,19 @@ const SignInView = observer(({store}) => {
         </div>);
 });
 
+const AddPasswordZeroState = observer(({store}) => {
+        return (
+        <div>
+            <h2 class="text-center">Click add password to begin</h2>
+            <Button className="form-control">Add a password</Button>
+            <p>Then sync your changes to the blockchain</p>
+        </div>);
+});
+
 const CenterpaneView = observer(({store}) => {
 
     if (store.passwordA.length == 0) {
-        return <div><p>zerostate</p></div>;
+        return <AddPasswordZeroState store={store} />
     }
 
     let pw = store.passwordA[store.selected];
@@ -482,11 +469,7 @@ const CenterpaneView = observer(({store}) => {
     )
 });
 
-const App = observer(({store}) => {
-    if (!store.signedIn) {
-        return (<SignInView store={store} />);
-    }
-
+const VaultView = observer(({store}) => {
     return (
     <div>
       <div className="row">
@@ -508,6 +491,20 @@ const App = observer(({store}) => {
         </div>
       </div>
     </div>);
+});
+
+const App = observer(({store}) => {
+
+    let mainView = (!store.signedIn) ?
+        <SignInView store={store} /> :
+        <VaultView store={store} />;
+
+    return (
+        <div>
+            {mainView}
+        </div>
+    );
+
 });
 
 window.onload = () => {
